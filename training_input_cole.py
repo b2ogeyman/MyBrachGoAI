@@ -6,7 +6,7 @@ import random
 
 
 def getdata(tar, filename):
-    member = tar.getmember("pro/" + filename)
+    member = tar.getmember(filename)
     f = tar.extractfile(member)
     data = str(f.read())
     starts = [m.start() for m in re.finditer(';', data)]
@@ -28,8 +28,9 @@ def getdata(tar, filename):
         answer[x][y] = 0
     return False, positions[st:st + 50], moves[st:st + 50]
 
-#tar = tarfile.open("pro.tar.gz", 'r:gz')
-#res = getdata(tar, "00373.sgf")
+#tar = tarfile.open("amature_batch.tar.gz", 'r:gz')
+#print('\n'.join(tar.getnames()))
+#res = getdata(tar, "2000-10-10-1.sgf")
 #arr = res[0][0]
 #f = open('test.txt', 'w')
 #for i in range(19):
