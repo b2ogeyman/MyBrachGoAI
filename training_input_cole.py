@@ -1,5 +1,5 @@
 import numpy as np
-import boardchange as bc
+import boardchange_km as bc
 import tarfile
 import re
 import random
