@@ -78,15 +78,15 @@ accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
 sess.run(tf.initialize_all_variables())
 
-tar = tarfile.open("amateur_batch.tar.gz", 'r:gz')
+tar = tarfile.open("amateur_batch1.tar.gz", 'r:gz')
 saver = tf.train.Saver()
-#saver.restore(sess, 'saved_policy_network_final.ckpt')
+#saver.restore(sess, 'saved_policy_network.ckpt')
 with open('filenames_kgs_batch.txt','r') as filenames:
     for num, line in enumerate(filenames):
 #        print(line)
 #        if num < 10500:
 #            continue
-        bad, batch_in, batch_out = inp.getdata(tar, "./amateur_batch/" + line[:-1])
+        bad, batch_in, batch_out = inp.getdata(tar, "./amateur_batch1/" + line[:-1])
 #        print(batch_out.shape)
 #        print(batch_out[20])
         if not bad:
