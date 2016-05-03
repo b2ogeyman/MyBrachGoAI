@@ -80,7 +80,7 @@ sess.run(tf.initialize_all_variables())
 
 tar = tarfile.open("amateur_batch1.tar.gz", 'r:gz')
 saver = tf.train.Saver()
-#saver.restore(sess, 'saved_policy_network.ckpt')
+saver.restore(sess, 'saved_policy_network_amateur.ckpt')
 with open('filenames_kgs_batch.txt','r') as filenames:
     for num, line in enumerate(filenames):
 #        print(line)
@@ -90,7 +90,7 @@ with open('filenames_kgs_batch.txt','r') as filenames:
 #        print(batch_out.shape)
 #        print(batch_out[20])
         if not bad:
-            if num % 100 == 0:
+            if num % 10 == 0:
 #            print(res_flat.eval(feed_dict={x: batch_in, y1: batch_out, keep_prob: 1.0}))
                 train_accuracy = accuracy.eval(feed_dict={x: batch_in, y1: batch_out, keep_prob: 1.0})
                 print("step %d, training accuracy %g" % (num, train_accuracy))
