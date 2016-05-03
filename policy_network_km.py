@@ -84,8 +84,8 @@ saver.restore(sess, 'saved_policy_network_amateur.ckpt')
 with open('filenames_kgs_batch.txt','r') as filenames:
     for num, line in enumerate(filenames):
 #        print(line)
-#        if num < 10500:
-#            continue
+        if num < 33500:
+            continue
         bad, batch_in, batch_out = inp.getdata(tar, "./amateur_batch1/" + line[:-1])
 #        print(batch_out.shape)
 #        print(batch_out[20])
