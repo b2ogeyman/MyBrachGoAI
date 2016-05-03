@@ -80,7 +80,7 @@ sess.run(tf.initialize_all_variables())
 
 tar = tarfile.open("amateur_batch1.tar.gz", 'r:gz')
 saver = tf.train.Saver()
-saver.restore(sess, 'saved_policy_network_amateur.ckpt')
+saver.restore(sess, 'saved_policy_network_amateur1.ckpt')
 with open('filenames_kgs_batch.txt','r') as filenames:
     for num, line in enumerate(filenames):
 #        print(line)
@@ -96,5 +96,5 @@ with open('filenames_kgs_batch.txt','r') as filenames:
                 print("step %d, training accuracy %g" % (num, train_accuracy))
             train_step.run(feed_dict={x: batch_in, y1: batch_out, keep_prob: 0.5})
             if num % 5000 == 4999:
-                save_path = saver.save(sess, 'saved_policy_network_amateur1.ckpt')
-    save_path = saver.save(sess, 'saved_policy_network_amateur1.ckpt')
+                save_path = saver.save(sess, 'saved_policy_network_amateur2.ckpt')
+    save_path = saver.save(sess, 'saved_policy_network_amateur2.ckpt')
