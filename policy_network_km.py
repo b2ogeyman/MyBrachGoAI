@@ -84,17 +84,15 @@ saver.restore(sess, 'saved_policy_network_amateur2.ckpt')
 with open('filenames_kgs_batch.txt','r') as filenames:
     for num, line in enumerate(filenames):
 #        print(line)
-        if num < 33500:
-            continue
-        bad, batch_in, batch_out = inp.getdata(tar, "./amateur_batch1/" + line[:-1])
+        bad, batch_in, batch_out = inp.getdata(tar, "./amateur_batch2/" + line[:-1])
 #        print(batch_out.shape)
 #        print(batch_out[20])
         if not bad:
-            if num % 100 == 0:
+            if num % 10 == 0:
 #            print(res_flat.eval(feed_dict={x: batch_in, y1: batch_out, keep_prob: 1.0}))
                 train_accuracy = accuracy.eval(feed_dict={x: batch_in, y1: batch_out, keep_prob: 1.0})
                 print("step %d, training accuracy %g" % (num, train_accuracy))
             train_step.run(feed_dict={x: batch_in, y1: batch_out, keep_prob: 0.5})
             if num % 5000 == 4999:
-                save_path = saver.save(sess, 'saved_policy_network_amateur1.ckpt')
-    save_path = saver.save(sess, 'saved_policy_network_amateur1.ckpt')
+                save_path = saver.save(sess, 'saved_policy_network_amateur3.ckpt')
+    save_path = saver.save(sess, 'saved_policy_network_amateur3.ckpt')
