@@ -88,7 +88,7 @@ with open('filenames_kgs_batch.txt','r') as filenames:
 #        print(batch_out.shape)
 #        print(batch_out[20])
         if not bad:
-            if num % 10 == 0:
+            if num % 100 == 0:
 #            print(res_flat.eval(feed_dict={x: batch_in, y1: batch_out, keep_prob: 1.0}))
                 train_accuracy = accuracy.eval(feed_dict={x: batch_in, y1: batch_out, keep_prob: 1.0})
                 print("step %d, training accuracy %g" % (num, train_accuracy))
