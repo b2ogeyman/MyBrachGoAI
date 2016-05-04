@@ -15,8 +15,8 @@ def getdata(tar, filename):
         return True, -1, -1
     pos = np.zeros((19, 19, 3), dtype=np.int)
     answer = np.zeros((19, 19), dtype=np.int)
-#    st = random.randrange(length - 51)
-    st = length - 52
+    st = random.randrange(length - 51)
+#    st = length - 52
     positions, moves = np.zeros((length, 19, 19, 3), dtype=np.int), np.zeros((length, 19, 19), dtype=np.int)
     for j1, i in enumerate(starts[1:]):
         x, y = ord(data[i + 3]) - ord('a'), ord(data[i + 4]) - ord('a')
