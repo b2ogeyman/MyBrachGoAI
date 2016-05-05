@@ -24,13 +24,13 @@ def getdata(tar, filename):
     pos = np.zeros((19, 19, 3), dtype=np.int)
     answer = np.zeros((19, 19), dtype=np.int)
     st = random.randrange(length - 51)
-#    st = 0
+ #   st = 0
 #    st = length - 52
     positions, moves = np.zeros((length, 19, 19, 3), dtype=np.int), np.zeros((length, 19, 19), dtype=np.int)
-    if 'HA' in data and 'AB' in data:
-        ind = [m.start() for m in re.finditer('HA', data)][0]
+    if 'HA[' in data and 'AB[' in data:
+        ind = [m.start() for m in re.finditer('HA\[', data)][0]
         num = ord(data[ind + 3]) - ord('0')
-        ind = [m.start() for m in re.finditer('AB', data)][0]
+        ind = [m.start() for m in re.finditer('AB\[', data)][0]
         v = [m.start() for m in re.finditer('\[', data[ind:])]
         for i in range(num):
             v[i] += ind
@@ -52,8 +52,8 @@ def getdata(tar, filename):
 
 #tar = tarfile.open("amateur_batch.tar.gz", 'r:gz')
 #print('\n'.join(tar.getnames()))
-#res = getdata(tar, "./amateur_batch/2014-12-13-10.sgf")
-#arr = res[1][2]
+#res = getdata(tar, "./amateur_batch/2009-12-12-9.sgf")
+#arr = res[1][0]
 #f = open('test.txt', 'w')
 #for i in range(19):
 #    for j in range(19):
