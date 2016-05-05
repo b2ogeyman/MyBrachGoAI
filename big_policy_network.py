@@ -107,9 +107,11 @@ sess.run(tf.initialize_all_variables())
 
 tar = tarfile.open("pro.tar.gz", 'r:gz')
 saver = tf.train.Saver()
-#saver.restore(sess, 'saved_policy_network_amateur2.ckpt')
+saver.restore(sess, 'big_policy_network0.ckpt')
 with open('filenames.txt', 'r') as filenames:
     for num, line in enumerate(filenames):
+        if num < 5000:
+            continue
 #        print(line)
         bad, batch_in, batch_out = inp.getdata(tar, "pro/" + line[:-1])
 #        print(batch_out.shape)
