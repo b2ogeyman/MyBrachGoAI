@@ -20,12 +20,12 @@ sess = tf.InteractiveSession()
 
 x = tf.placeholder(tf.float32, [None, 19, 19, 3])
 batch_size = 50
-w1 = weight([7, 7, 3, 48])
-b1 = bias([48])
+w1 = weight([7, 7, 3, 64])
+b1 = bias([64])
 
 conv1 = tf.nn.relu(conv2d(x, w1) + b1)
 
-w2 = weight([5, 5, 48, 64])
+w2 = weight([5, 5, 64, 64])
 b2 = bias([64])
 
 conv2 = tf.nn.relu(conv2d(conv1, w2) + b2)
