@@ -23,8 +23,8 @@ def getdata(tar, filename):
         return True, -1, -1
     pos = np.zeros((19, 19, 3), dtype=np.int)
     answer = np.zeros((19, 19), dtype=np.int)
- #   st = random.randrange(length - 51)
-    st = 0
+    st = random.randrange(length - 51)
+ #   st = 0
 #    st = length - 52
     positions, moves = np.zeros((length, 19, 19, 3), dtype=np.int), np.zeros((length, 19, 19), dtype=np.int)
     if 'HA[' in data and 'AB[' in data:
