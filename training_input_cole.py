@@ -23,8 +23,8 @@ def getdata(tar, filename):
         return True, -1, -1
     pos = np.zeros((19, 19, 3), dtype=np.int)
     answer = np.zeros((19, 19), dtype=np.int)
-    st = random.randrange(length - 51)
- #   st = 0
+ #   st = random.randrange(length - 51)
+    st = 0
 #    st = length - 52
     positions, moves = np.zeros((length, 19, 19, 3), dtype=np.int), np.zeros((length, 19, 19), dtype=np.int)
     if 'HA[' in data and 'AB[' in data:
@@ -52,19 +52,21 @@ def getdata(tar, filename):
 
 #tar = tarfile.open("amateur_batch.tar.gz", 'r:gz')
 #print('\n'.join(tar.getnames()))
-#res = getdata(tar, "./amateur_batch/2009-12-12-9.sgf")
-#arr = res[1][0]
+#res = getdata(tar, "./amateur_batch/2010-01-05-1.sgf")
+#arr = res[1][49]
 #f = open('test.txt', 'w')
 #for i in range(19):
 #    for j in range(19):
 #        if arr[j][i][0] == 1:
 #            f.write('O ')
-#        elif arr[j][i][1] == 1:
+#       elif arr[j][i][1] == 1:
 #            f.write('# ')
 #        elif arr[j][i][2] == 1:
 #            f.write('k ')
 #        else:
 #            f.write('+ ')
 #    f.write('\n')
+
+#print(res[2][49])
 
 #np.savetxt('test.txt', arr, '%d')
