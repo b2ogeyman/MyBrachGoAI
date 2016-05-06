@@ -105,15 +105,15 @@ accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
 sess.run(tf.initialize_all_variables())
 
-tar = tarfile.open("pro.tar.gz", 'r:gz')
+tar = tarfile.open("amateur_batch.tar.gz", 'r:gz')
 saver = tf.train.Saver()
-#saver.restore(sess, 'big_policy_network0.ckpt')
-with open('filenames.txt', 'r') as filenames:
+saver.restore(sess, 'big_policy_network1.ckpt')
+with open('filenames_kgs.txt', 'r') as filenames:
     for num, line in enumerate(filenames):
 #        if num < 5000:
 #            continue
 #        print(line)
-        bad, batch_in, batch_out = inp.getdata(tar, "pro/" + line[:-1])
+        bad, batch_in, batch_out = inp.getdata(tar, "./amateur_batch/" + line[:-1])
 #        print(batch_out.shape)
 #        print(batch_out[20])
         if not bad:
@@ -123,5 +123,5 @@ with open('filenames.txt', 'r') as filenames:
                 print("step %d, training accuracy %g" % (num, train_accuracy))
             train_step.run(feed_dict={x: batch_in, y1: batch_out, keep_prob: 0.5})
             if num % 5000 == 4999:
-                save_path = saver.save(sess, 'big_policy_network1.ckpt')
-    save_path = saver.save(sess, 'big_policy_network_final1.ckpt')
+                save_path = saver.save(sess, 'big_policy_network2.ckpt')
+    save_path = saver.save(sess, 'big_policy_network_final2.ckpt')
