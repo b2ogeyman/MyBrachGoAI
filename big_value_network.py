@@ -102,6 +102,8 @@ res, tot = 0, 0
 with open('filenames_kgs.txt', 'r') as filenames:
     for num, line in enumerate(filenames):
 #        print(line)
+        if num <= 15000:
+            continue
         bad, batch_in, batch_out = inp.getdata(tar, "./amateur_batch/" + line[:-1])
 #        print(batch_out.shape)
 #        print(batch_out[20])
@@ -114,5 +116,6 @@ with open('filenames_kgs.txt', 'r') as filenames:
                 res, tot = 0, 0
             train_step_v.run(feed_dict={x_v: batch_in, y1_v: batch_out, keep_prob_v: 0.5})
         if num % 5000 == 4999:
+            print("save the network on step %d" % num)
             saver.save(sess, 'big_value_network1.ckpt')
     save_path = saver.save(sess, 'big_value_network1.ckpt')
