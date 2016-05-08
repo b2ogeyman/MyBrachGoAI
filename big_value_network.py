@@ -97,6 +97,7 @@ sess.run(tf.initialize_all_variables())
 
 tar = tarfile.open("amateur_batch.tar.gz", 'r:gz')
 saver = tf.train.Saver()
+saver.restore(sess, 'big_value_network0.ckpt')
 res, tot = 0, 0
 with open('filenames_kgs.txt', 'r') as filenames:
     for num, line in enumerate(filenames):
@@ -111,7 +112,7 @@ with open('filenames_kgs.txt', 'r') as filenames:
 #            print(res_flat.eval(feed_dict={x: batch_in, y1: batch_out, keep_prob: 1.0}))
                 print("step %d, training accuracy %.4f" % (num, res / tot))
                 res, tot = 0, 0
-            if num % 5000 == 4999:
-                saver.save(sess, 'big_value_network0.ckpt')
             train_step_v.run(feed_dict={x_v: batch_in, y1_v: batch_out, keep_prob_v: 0.5})
-    save_path = saver.save(sess, 'big_value_network0.ckpt')
+        if num % 5000 == 4999:
+            saver.save(sess, 'big_value_network1.ckpt')
+    save_path = saver.save(sess, 'big_value_network1.ckpt')
