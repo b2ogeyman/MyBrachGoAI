@@ -58,8 +58,8 @@ def getdata(tar, filename):
     return False, positions[st:st + 50], wins[st:st + 50]
 
 #tar = tarfile.open("amateur_batch.tar.gz", 'r:gz')
-#res = getdata(tar, "./amateur_batch/2009-12-05-16.sgf")
-#print(res[2][40])
+#res = getdata(tar, "./amateur_batch/2015-05-30-31.sgf")
+#print(res[2][19])
 #arr = res[1][40]
 #f = open('test.txt', 'w')
 #for i in range(19):

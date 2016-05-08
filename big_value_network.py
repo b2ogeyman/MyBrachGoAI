@@ -107,7 +107,7 @@ with open('filenames_kgs.txt', 'r') as filenames:
         if not bad:
             res += accuracy_v.eval(feed_dict={x_v: batch_in, y1_v: batch_out, keep_prob_v: 1.0})
             tot += 1
-            if num % 100 == 0:
+            if tot == 100:
 #            print(res_flat.eval(feed_dict={x: batch_in, y1: batch_out, keep_prob: 1.0}))
                 print("step %d, training accuracy %.4f" % (num, res / tot))
                 res, tot = 0, 0
