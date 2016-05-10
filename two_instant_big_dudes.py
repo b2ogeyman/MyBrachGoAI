@@ -26,39 +26,66 @@ g2 = tf.Graph()
 with g1.as_default():
     pre_x = tf.placeholder(tf.float32, [19, 19, 3])
     x = tf.expand_dims(pre_x, 0)
-    w1 = weight([7, 7, 3, 48])
-    b1 = bias([48])
+
+    w1 = weight([7, 7, 3, 64])
+    b1 = bias([64])
 
     conv1 = tf.nn.relu(conv2d(x, w1) + b1)
 
-    w2 = weight([5, 5, 48, 32])
-    b2 = bias([32])
+    w2 = weight([5, 5, 64, 64])
+    b2 = bias([64])
 
     conv2 = tf.nn.relu(conv2d(conv1, w2) + b2)
 
-    w3 = weight([5, 5, 32, 32])
-    b3 = bias([32])
+    w3 = weight([3, 3, 64, 64])
+    b3 = bias([64])
 
     conv3 = tf.nn.relu(conv2d(conv2, w3) + b3)
 
-    w4 = weight([5, 5, 32, 32])
-    b4 = bias([32])
+    w4 = weight([3, 3, 64, 64])
+    b4 = bias([64])
 
     conv4 = tf.nn.relu(conv2d(conv3, w4) + b4)
 
-    w5 = weight([19 * 19 * 32, 2048])
-    b5 = bias([2048])
+    w5 = weight([3, 3, 64, 64])
+    b5 = bias([64])
 
-    flat = tf.reshape(conv4, [1, 19 * 19 * 32])
-    dense0 = tf.nn.relu(tf.matmul(flat, w5) + b5)
+    conv5 = tf.nn.relu(conv2d(conv4, w5) + b5)
+
+    w6 = weight([3, 3, 64, 64])
+    b6 = bias([64])
+
+    conv6 = tf.nn.relu(conv2d(conv5, w6) + b6)
+
+    w7 = weight([3, 3, 64, 64])
+    b7 = bias([64])
+
+    conv7 = tf.nn.relu(conv2d(conv6, w7) + b7)
+
+    w8 = weight([3, 3, 64, 64])
+    b8 = bias([64])
+
+    conv8 = tf.nn.relu(conv2d(conv7, w8) + b8)
+
+    w9 = weight([3, 3, 64, 64])
+    b9 = bias([64])
+
+    conv9 = tf.nn.relu(conv2d(conv8, w9) + b9)
+
+    w10 = weight([1, 1, 64, 64])
+    b10 = bias([64])
+
+    conv10 = tf.nn.relu(conv2d(conv9, w9) + b9)
+
+    dense0 = tf.reshape(conv10, [1, 19 * 19 * 64])
 
     keep_prob = tf.placeholder(tf.float32)
     dense = tf.nn.dropout(dense0, keep_prob)
 
-    w6 = weight([2048, 19 * 19])
-    b6 = bias([19 * 19])
+    w11 = weight([19 * 19 * 64, 19 * 19])
+    b11 = bias([19 * 19])
 
-    res_flat = tf.nn.softmax(tf.matmul(dense, w6) + b6)
+    res_flat = tf.nn.softmax(tf.matmul(dense, w11) + b11)
 
     res = tf.reshape(res_flat, [1, 19, 19])
 
@@ -105,7 +132,7 @@ with g2.as_default():
     saver2 = tf.train.Saver()
 
 with g1.as_default():
-    saver1.restore(sess1, 'saved_policy_network_final.ckpt')
+    saver1.restore(sess1, 'big_policy_network4.ckpt')
 with g2.as_default():
     saver2.restore(sess2, 'saved_value_network_final.ckpt')
 
@@ -129,6 +156,7 @@ class GameTree(object):
         self.children.append(node)
 
 gamestate = np.zeros((19,19,3), dtype=int)
+move = []
 
 def flip(gs):
     t = np.copy(gs[:,:,0])
@@ -138,15 +166,19 @@ def flip(gs):
 
 def showBoard():
     result = "   a b c d e f g h i j k l m n o p q r s \n"
+    global move
+#    print(move)
     for i in range(19):
         result += str(i).zfill(2) + ' '
         for j in range(19):
-            if gamestate[i][j][0] == 1:
+            if [i, j] == move:
+                result += 'X '
+            elif gamestate[i][j][0] == 1:
                 result += '0 '
             elif gamestate[i][j][1] == 1:
                 result += '# '
             else:
-                result += '+ '
+                result += '. '
         result += '\n'
     return result
 
@@ -181,16 +213,22 @@ def growTree(root, width, depth):
 def playBestMove():
     global gamestate
     global depth_to_consider
+    global move
     fuseki_match, fuseki_move = op.make_move(gamestate)
     if fuseki_match:
         print('Found a cool fuseki move!')
+        move = fuseki_move[:]
         gamestate = do_move(gamestate, fuseki_move, True)
         return
     print('Thinking hard about this one...')
     p_predicts = sess1.run(res, feed_dict={pre_x: np.copy(gamestate), keep_prob: 1.0})[0]
     p_indices = [[i, j] for i, j in itertools.product(*[range(19), range(19)]) if not np.any(gamestate[i][j])]
     p_indices.sort(key=lambda x: p_predicts[x[0]][x[1]], reverse=True)
-    bestMove = p_indices[0]
+    i = 0
+    while bc.suicide(np.copy(gamestate), p_indices[i]):
+        i += 1
+    bestMove = p_indices[i]
+    move = bestMove[:]
     gamestate = do_move(gamestate, bestMove, True)
 
 def PlayRandomMove():
@@ -234,12 +272,15 @@ def tMiniMax(tree):
     return list(map(tMin, tree.children)).index(max_possibility)
 
 gameDone = False
+sgf = '(;GM[1]FF[4]CA[UTF-8]AP[CGoban:3]ST[2]RU[Japanese]SZ[19]KM[0.00]PW[White]PB[Black]\n'
 while not gameDone:
-    playMove()
+    playBestMove()
+    sgf += (';B[' + chr(ord('a') + move[1]) + chr(ord('a') + move[0]) + ']\n')
     print('Smart Move:')
     print(showBoard())
     gamestate = flip(gamestate)
     playBestMove()
+    sgf += (';W[' + chr(ord('a') + move[1]) + chr(ord('a') + move[0]) + ']\n')
     gamestate = flip(gamestate)
     print('Instant Move:')
     print(showBoard())
@@ -247,6 +288,6 @@ while not gameDone:
     if i == 'q':
         gameDone = True
 
-sess1.close()
-sess2.close()
-sys.exit(0)
+sgf += ')'
+file = open('test.sgf', 'w')
+file.write(sgf)

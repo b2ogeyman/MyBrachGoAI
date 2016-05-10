@@ -66,20 +66,29 @@ sess.run(tf.initialize_all_variables())
 
 tar = tarfile.open("pro.tar.gz", 'r:gz')
 saver = tf.train.Saver()
+saver.restore(sess, 'saved_value_network_final.ckpt')
+res, tot = 0, 0
 with open('filenames.txt', 'r') as filenames:
     for num, line in enumerate(filenames):
 #        print(line)
-        if num < 300:
-            continue
-        bad, batch_in, batch_out = inp.getdata(tar, line[:-1])
+   #     if num < 300:
+   #         continue
+        if num >= 1000:
+            break
+        print(num)
+        bad, batch_in, batch_out = inp.getdata(tar, "pro/" + line[:-1])
+        if not bad:
+            tot += 1
+            res += accuracy_v.eval(feed_dict={x_v: batch_in, y1_v: batch_out, keep_prob_v: 1.0})
 #        print(batch_out.shape)
 #        print(batch_out[20])
-        if not bad:
-            if num % 100 == 0:
-#            print(res_flat.eval(feed_dict={x: batch_in, y1: batch_out, keep_prob: 1.0}))
-                train_accuracy = accuracy_v.eval(feed_dict={x_v: batch_in, y1_v: batch_out, keep_prob_v: 1.0})
-                print("step %d, training accuracy %.4f" % (num, train_accuracy))
-            if num % 5000 == 4999:
-                saver.save(sess, 'saved_value_network.ckpt')
-            train_step_v.run(feed_dict={x_v: batch_in, y1_v: batch_out, keep_prob_v: 0.5})
-    save_path = saver.save(sess, 'saved_value_network_final.ckpt')
+       # if not bad:
+       #     if num % 100 == 0:
+#      #      print(res_flat.eval(feed_dict={x: batch_in, y1: batch_out, keep_prob: 1.0}))
+      #          train_accuracy = accuracy_v.eval(feed_dict={x_v: batch_in, y1_v: batch_out, keep_prob_v: 1.0})
+     #           print("step %d, training accuracy %.4f" % (num, train_accuracy))
+    #        if num % 5000 == 4999:
+   #             saver.save(sess, 'saved_value_network.ckpt')
+  #          train_step_v.run(feed_dict={x_v: batch_in, y1_v: batch_out, keep_prob_v: 0.5})
+ #   save_path = saver.save(sess, 'saved_value_network_final.ckpt')
+print(res / tot)

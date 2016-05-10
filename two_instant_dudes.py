@@ -129,6 +129,7 @@ class GameTree(object):
         self.children.append(node)
 
 gamestate = np.zeros((19,19,3), dtype=int)
+move = []
 
 def flip(gs):
     t = np.copy(gs[:,:,0])
@@ -138,10 +139,14 @@ def flip(gs):
 
 def showBoard():
     result = "   a b c d e f g h i j k l m n o p q r s \n"
+    global move
+#    print(move)
     for i in range(19):
         result += str(i).zfill(2) + ' '
         for j in range(19):
-            if gamestate[i][j][0] == 1:
+            if [i, j] == move:
+                result += 'X '
+            elif gamestate[i][j][0] == 1:
                 result += '0 '
             elif gamestate[i][j][1] == 1:
                 result += '# '
@@ -181,9 +186,11 @@ def growTree(root, width, depth):
 def playBestMove():
     global gamestate
     global depth_to_consider
+    global move
     fuseki_match, fuseki_move = op.make_move(gamestate)
     if fuseki_match:
         print('Found a cool fuseki move!')
+        move = fuseki_move[:]
         gamestate = do_move(gamestate, fuseki_move, True)
         return
     print('Thinking hard about this one...')
@@ -191,6 +198,7 @@ def playBestMove():
     p_indices = [[i, j] for i, j in itertools.product(*[range(19), range(19)]) if not np.any(gamestate[i][j])]
     p_indices.sort(key=lambda x: p_predicts[x[0]][x[1]], reverse=True)
     bestMove = p_indices[0]
+    move = bestMove[:]
     gamestate = do_move(gamestate, bestMove, True)
 
 def PlayRandomMove():
@@ -234,12 +242,15 @@ def tMiniMax(tree):
     return list(map(tMin, tree.children)).index(max_possibility)
 
 gameDone = False
+sgf = '(;GM[1]FF[4]CA[UTF-8]AP[CGoban:3]ST[2]RU[Japanese]SZ[19]KM[0.00]PW[White]PB[Black]\n'
 while not gameDone:
-    playMove()
+    playBestMove()
+    sgf += (';B[' + chr(ord('a') + move[1]) + chr(ord('a') + move[0]) + ']\n')
     print('Smart Move:')
     print(showBoard())
     gamestate = flip(gamestate)
     playBestMove()
+    sgf += (';W[' + chr(ord('a') + move[1]) + chr(ord('a') + move[0]) + ']\n')
     gamestate = flip(gamestate)
     print('Instant Move:')
     print(showBoard())
@@ -247,6 +258,9 @@ while not gameDone:
     if i == 'q':
         gameDone = True
 
+sgf += ')'
+file = open('test.sgf', 'w')
+file.write(sgf)
 sess1.close()
 sess2.close()
 sys.exit(0)
