@@ -11,9 +11,8 @@ def flip(gs):
     return gs
 
 
-def getdata(tar, filename):
-    member = tar.getmember(filename)
-    f = tar.extractfile(member)
+def getdata(filename):
+    f = open(filename, 'r')
     data = str(f.read())
     starts = [m.start() for m in re.finditer(';', data)]
     length = len(starts) - 1
@@ -23,9 +22,6 @@ def getdata(tar, filename):
     if data[ind_w + 1] == 'T':
         return True, -1, -1
     pos = np.zeros((19, 19, 3), dtype=np.int)
-    #st = random.randrange(length - 51)
-    #st = 0
-    st = length - 52
     positions, wins = np.zeros((length, 19, 19, 3), dtype=np.int), np.zeros((length, 2), dtype=np.int)
     handicap = False
     if 'HA[' in data and 'AB[' in data:
@@ -55,7 +51,7 @@ def getdata(tar, filename):
             wins[j1] = [1, 0]
         else:
             wins[j1] = [0, 1]
-    return False, positions[st:st + 50], wins[st:st + 50]
+    return False, positions[-10:], wins[-10:]
 
 #tar = tarfile.open("amateur_batch.tar.gz", 'r:gz')
 #res = getdata(tar, "./amateur_batch/2015-05-30-31.sgf")

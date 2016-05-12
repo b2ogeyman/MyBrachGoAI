@@ -19,7 +19,7 @@ def maxpool(x):
 sess = tf.InteractiveSession()
 
 x_v = tf.placeholder(tf.float32, [None, 19, 19, 3])
-batch_size = 50
+batch_size = 10
 w1_v = weight([7, 7, 3, 64])
 b1_v = bias([64])
 
@@ -95,27 +95,23 @@ accuracy_v = tf.reduce_mean(tf.cast(correct_prediction_v, tf.float32))
 
 sess.run(tf.initialize_all_variables())
 
-tar = tarfile.open("amateur_batch.tar.gz", 'r:gz')
 saver = tf.train.Saver()
-saver.restore(sess, 'big_value_network0.ckpt')
 res, tot = 0, 0
-with open('filenames_kgs.txt', 'r') as filenames:
+with open('filenames_score.txt', 'r') as filenames:
     for num, line in enumerate(filenames):
 #        print(line)
-        if num <= 15000:
-            continue
-        bad, batch_in, batch_out = inp.getdata(tar, "./amateur_batch/" + line[:-1])
+        bad, batch_in, batch_out = inp.getdata("/Users/user/Downloads/amateur4d/" + line[:-1])
 #        print(batch_out.shape)
 #        print(batch_out[20])
         if not bad:
             res += accuracy_v.eval(feed_dict={x_v: batch_in, y1_v: batch_out, keep_prob_v: 1.0})
             tot += 1
-            if tot == 100:
+            if tot == 500:
 #            print(res_flat.eval(feed_dict={x: batch_in, y1: batch_out, keep_prob: 1.0}))
                 print("step %d, training accuracy %.4f" % (num, res / tot))
                 res, tot = 0, 0
             train_step_v.run(feed_dict={x_v: batch_in, y1_v: batch_out, keep_prob_v: 0.5})
         if num % 5000 == 4999:
             print("save the network on step %d" % num)
-            saver.save(sess, 'big_value_network1.ckpt')
-    save_path = saver.save(sess, 'big_value_network1.ckpt')
+            saver.save(sess, 'big_value_network0.ckpt')
+    save_path = saver.save(sess, 'big_value_network0.ckpt')
