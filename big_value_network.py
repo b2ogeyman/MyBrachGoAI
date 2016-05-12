@@ -103,7 +103,7 @@ pos = 0
 with open('filenames_score.txt', 'r') as filenames:
     for num, line in enumerate(filenames):
 #        print(line)
-        bad, cur_in, cur_out = inp.getdata("/Users/user/Downloads/amateur4d/" + line[:-1])
+        bad, cur_in, cur_out = inp.getdata("./amateur4d/" + line[:-1])
         if not bad:
             batch_in[pos:pos + 10] = cur_in
             batch_out[pos:pos + 10] = cur_out
