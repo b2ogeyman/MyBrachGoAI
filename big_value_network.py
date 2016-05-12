@@ -97,7 +97,7 @@ res, tot = 0, 0
 with open('filenames_score.txt', 'r') as filenames:
     for num, line in enumerate(filenames):
 #        print(line)
-        bad, batch_in, batch_out = inp.getdata("./amateur4d/" + line[:-1])
+        bad, batch_in, batch_out = inp.getdata("./amateur4d_score/" + line[:-1])
 #        if not bad:
 #            batch_in[pos:pos + 10] = cur_in
 #            batch_out[pos:pos + 10] = cur_out
