@@ -20,16 +20,12 @@ def maxpool(x):
 sess = tf.InteractiveSession()
 
 x_v = tf.placeholder(tf.float32, [None, 19, 19, 3])
-batch_size = 50
-w1_v = weight([7, 7, 3, 64])
-b1_v = bias([64])
+batch_size = 10
 
-conv1_v = tf.nn.relu(conv2d(x_v, w1_v) + b1_v)
-
-w2_v = weight([5, 5, 64, 64])
+w2_v = weight([5, 5, 3, 64])
 b2_v = bias([64])
 
-conv2_v = tf.nn.relu(conv2d(conv1_v, w2_v) + b2_v)
+conv2_v = tf.nn.relu(conv2d(x_v, w2_v) + b2_v)
 
 w3_v = weight([3, 3, 64, 64])
 b3_v = bias([64])
@@ -71,8 +67,8 @@ b10_v = bias([64])
 
 conv10_v = tf.nn.relu(conv2d(conv9_v, w9_v) + b9_v)
 
-w11_v = weight([19 * 19 * 64, 128])
-b11_v = bias([128])
+w11_v = weight([19 * 19 * 64, 64])
+b11_v = bias([64])
 
 flat_v = tf.reshape(conv10_v, [batch_size, 19 * 19 * 64])
 dense0_v = tf.nn.relu(tf.matmul(flat_v, w11_v) + b11_v)
@@ -80,7 +76,7 @@ dense0_v = tf.nn.relu(tf.matmul(flat_v, w11_v) + b11_v)
 keep_prob_v = tf.placeholder(tf.float32)
 dense_v = tf.nn.dropout(dense0_v, keep_prob_v)
 
-w12_v = weight([128, 2])
+w12_v = weight([64, 2])
 b12_v = bias([2])
 
 res_flat_v = tf.nn.softmax(tf.matmul(dense_v, w12_v) + b12_v)
@@ -98,27 +94,22 @@ sess.run(tf.initialize_all_variables())
 
 saver = tf.train.Saver()
 res, tot = 0, 0
-batch_in, batch_out = np.zeros((batch_size, 19, 19, 3), dtype=np.int), np.zeros((batch_size, 2), dtype=np.int)
-pos = 0
 with open('filenames_score.txt', 'r') as filenames:
     for num, line in enumerate(filenames):
 #        print(line)
-        bad, cur_in, cur_out = inp.getdata("./amateur4d/" + line[:-1])
+        bad, batch_in, batch_out = inp.getdata("/Users/user/Downloads/amateur4d/" + line[:-1])
+#        if not bad:
+#            batch_in[pos:pos + 10] = cur_in
+#            batch_out[pos:pos + 10] = cur_out
+#            pos += 10
         if not bad:
-            batch_in[pos:pos + 10] = cur_in
-            batch_out[pos:pos + 10] = cur_out
-            pos += 10
-
-        if pos == 50:
-            res += accuracy_v.eval(feed_dict={x_v: batch_in, y1_v: batch_out, keep_prob_v: 1.0})
             tot += 1
-            if tot == 100:
-#            print(res_flat.eval(feed_dict={x: batch_in, y1: batch_out, keep_prob: 1.0}))
+            res += accuracy_v.eval(feed_dict={x_v: batch_in, y1_v: batch_out, keep_prob_v: 1.0})
+            if tot == 50:
                 print("step %d, training accuracy %.4f" % (num, res / tot))
-                res, tot = 0, 0
+                tot, res = 0, 0
             train_step_v.run(feed_dict={x_v: batch_in, y1_v: batch_out, keep_prob_v: 0.5})
-            batch_in, batch_out = np.zeros((batch_size, 19, 19, 3), dtype=np.int), np.zeros((batch_size, 2), dtype=np.int)
-            pos = 0
+
         if num % 5000 == 4999:
             print("save the network on step %d" % num)
             saver.save(sess, 'big_value_network0.ckpt')
