@@ -5,9 +5,9 @@ import re
 import random
 
 def flip(gs):
-    t = np.copy(gs[:,:,0])
-    gs[:,:,0] = gs[:,:,1]
-    gs[:,:,1] = t
+    t = np.copy(gs[:, :, 0])
+    gs[:, :, 0] = gs[:, :, 1]
+    gs[:, :, 1] = t
     return gs
 
 

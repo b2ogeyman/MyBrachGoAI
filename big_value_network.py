@@ -1,6 +1,7 @@
 import tensorflow as tf
 import training_input_value as inp
 import tarfile
+import numpy as np
 
 def weight(shape):
     initial = tf.truncated_normal(shape, stddev=0.01)
@@ -19,7 +20,7 @@ def maxpool(x):
 sess = tf.InteractiveSession()
 
 x_v = tf.placeholder(tf.float32, [None, 19, 19, 3])
-batch_size = 10
+batch_size = 50
 w1_v = weight([7, 7, 3, 64])
 b1_v = bias([64])
 
@@ -97,20 +98,29 @@ sess.run(tf.initialize_all_variables())
 
 saver = tf.train.Saver()
 res, tot = 0, 0
+batch_in, batch_out = np.zeros((batch_size, 19, 19, 3), dtype=np.int), np.zeros((batch_size, 2), dtype=np.int)
+pos = 0
 with open('filenames_score.txt', 'r') as filenames:
     for num, line in enumerate(filenames):
 #        print(line)
-        bad, batch_in, batch_out = inp.getdata("/Users/user/Downloads/amateur4d/" + line[:-1])
-#        print(batch_out.shape)
-#        print(batch_out[20])
+        bad, cur_in, cur_out = inp.getdata("/Users/user/Downloads/amateur4d/" + line[:-1])
         if not bad:
+            batch_in[pos:pos + 10] = cur_in
+            batch_out[pos:pos + 10] = cur_out
+            pos += 10
+
+
+
+        if pos == 50:
             res += accuracy_v.eval(feed_dict={x_v: batch_in, y1_v: batch_out, keep_prob_v: 1.0})
             tot += 1
-            if tot == 500:
+            if tot == 10:
 #            print(res_flat.eval(feed_dict={x: batch_in, y1: batch_out, keep_prob: 1.0}))
                 print("step %d, training accuracy %.4f" % (num, res / tot))
                 res, tot = 0, 0
             train_step_v.run(feed_dict={x_v: batch_in, y1_v: batch_out, keep_prob_v: 0.5})
+            batch_in, batch_out = np.zeros((batch_size, 19, 19, 3), dtype=np.int), np.zeros((batch_size, 2), dtype=np.int)
+            pos = 0
         if num % 5000 == 4999:
             print("save the network on step %d" % num)
             saver.save(sess, 'big_value_network0.ckpt')
