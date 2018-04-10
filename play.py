@@ -131,7 +131,7 @@ with g2.as_default():
     saver2 = tf.train.Saver()
 
 with g1.as_default():
-    saver1.restore(sess1, 'big_policy_network4.ckpt')
+    saver1.restore(sess1, 'big_policy_network5.ckpt')
 with g2.as_default():
     saver2.restore(sess2, 'saved_value_network_final.ckpt')
 
@@ -230,6 +230,17 @@ def playMove():
     direction = tMiniMax(gametree)
     gamestate = gametree.children[direction].name
 
+
+def printDistribution(dist):
+    result = "   a b c d e f g h j k l m n o p q r s t\n"
+    for i in range(19):
+        result += str(19 - i).zfill(2) + ' '
+        for j in range(19):
+            result += ('%3.0f' % (dist[i][j] * 1000)) + ' '
+        result += '\n'
+    print(result)
+
+
 def playBestMove():
     global gamestate
     global depth_to_consider
@@ -242,6 +253,7 @@ def playBestMove():
         return
     print('Thinking hard about this one...')
     p_predicts = sess1.run(res, feed_dict={pre_x: np.copy(gamestate), keep_prob: 1.0})[0]
+    printDistribution(p_predicts)
     p_indices = [[i, j] for i, j in itertools.product(*[range(19), range(19)]) if not np.any(gamestate[i][j])]
     p_indices.sort(key=lambda x: p_predicts[x[0]][x[1]], reverse=True)
     i = 0

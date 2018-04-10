@@ -36,8 +36,8 @@ def getdata(filename):
             pos = flip(pos)
         pos = flip(pos)
         handicap = True
-
-    for j1, i in enumerate(starts[1:]):
+    j1 = 0
+    for i in starts[1:]:
         x, y = ord(data[i + 3]) - ord('a'), ord(data[i + 4]) - ord('a')
         if x < 0 or x >= 19 or y < 0 or y >= 19:
             continue
@@ -51,7 +51,8 @@ def getdata(filename):
             wins[j1] = [1, 0]
         else:
             wins[j1] = [0, 1]
-    return False, positions[-10:], wins[-10:]
+        j1 += 1
+    return False, positions[j1 - 10:j1], wins[j1 - 10:j1]
 
 #tar = tarfile.open("amateur_batch.tar.gz", 'r:gz')
 #res = getdata(tar, "./amateur_batch/2015-05-30-31.sgf")
