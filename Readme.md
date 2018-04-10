@@ -15,4 +15,4 @@ To do this, acquire pregenerated connections from [this Google Drive](https://dr
 
 Then you can play go against the network by running `python3 play_long.py`.
 
-You can also train the networks yourself by running `python3 policy_network_km.py` (necessary for all version) and `python3 value_network.py` (only for play_long).
+You can also train the networks yourself by running `python3 policy_network_km.py` (necessary for all versions) and `python3 value_network.py` (only for play_long).
